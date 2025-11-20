@@ -37,7 +37,7 @@ app.get('/todos', async (req, res, next) => {
     next(error); // Pass to error handler
   }
 });
-
+// GET Completed – Read
 app.get('/todos/completed', async (req, res, next) => {
   try {
      const completed = await TodoModel.find({ completed: true });
@@ -47,7 +47,17 @@ app.get('/todos/completed', async (req, res, next) => {
     next(error);
   }
 });
+// GET Incomplete – Read
+app.get('/todos/completed=false', async (req, res, next) => {
+  try {
+     const incomplete = await TodoModel.find({ completed: false });
+     res.json(incomplete);
+  } catch (error) {
+    next(error);
+  }
+});
 
+// GET One – Read
 app.get('/todos/:id', async (req, res, next) => {
   try {
       const todo = await TodoModel.findById(req.params.id);
@@ -93,17 +103,6 @@ app.delete('/todos/:id', async (req, res, next) => {
     next(error);
   }
 });
-
-
-app.get('/todos/active', async (req, res, next) => {
-  try {
-      const active = await TodoModel.find({ completed: false });
-      res.json(active); // Custom Read!
-  } catch (error) {
-    next(error);
-  }
-});
-
 
 
 app.use(errorhandler); // Use the error handling middleware
