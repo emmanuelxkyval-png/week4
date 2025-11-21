@@ -21,14 +21,9 @@ connectDB(); // Connect to MongoDB
 
 app.use(logRequest); // Use the logging middleware
 
-let todos = [
-  { id: 1, task: 'Learn Node.js', completed: false },
-  { id: 2, task: 'Build CRUD API', completed: false },
-  { id: 3, task: 'Test API', completed: false },
-];
 
 // GET All – Read
-app.get('/todos', async (req, res, next) => {
+app.get('/todos/all', async (req, res, next) => {
 
   const todos = await TodoModel.find();
   try {
@@ -37,21 +32,19 @@ app.get('/todos', async (req, res, next) => {
     next(error); // Pass to error handler
   }
 });
-// GET Completed – Read
-app.get('/todos/completed', async (req, res, next) => {
-  try {
-     const completed = await TodoModel.find({ completed: true });
-     res.json(completed);
 
-  } catch (error) {
-    next(error);
-  }
-});
-// GET Incomplete – Read
-app.get('/todos/completed=false', async (req, res, next) => {
+
+// GET Query – Read
+app.get('/todos', async (req, res, next) => {
   try {
-     const incomplete = await TodoModel.find({ completed: false });
-     res.json(incomplete);
+      const { completed } = req.query;
+
+      let filter = {};
+      if (completed !== undefined) {
+        filter.completed = completed === 'true';
+      }
+      const todos = await TodoModel.find(filter);
+      res.json(todos);
   } catch (error) {
     next(error);
   }
